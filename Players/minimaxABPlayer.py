@@ -3,9 +3,9 @@ import asyncio
 from poke_env.player import Player, RandomPlayer
 from BattleNode import BattleTree 
 
-## Player object that utilizes a minimax algorithm to attack
+## Player object that utilizes a minimax algorithm + alpha beta pruning to attack
 
-class MinimaxPlayer(Player):
+class MinimaxABPlayer(Player):
     DEPTH = 3
     
     def choose_move(self, battle):
@@ -15,7 +15,7 @@ class MinimaxPlayer(Player):
         
         if battle.available_moves: 
             # Finds move from avaliable moves with highest base power
-            best_eval, best_move = self.minimax(bt, True)
+            _, best_move = self.minimax(bt, float('-inf'), float('inf'), True)
 
             # check if best_move is in available_moves
             if(best_move in battle.available_moves):
@@ -26,7 +26,7 @@ class MinimaxPlayer(Player):
 
 
     #standard minimax algorithm to be used in choose_move
-    def minimax(self, node, maximizingPlayer):
+    def minimax(self, node, alpha, beta, maximizingPlayer):
         if(node.subnodes == []):
             return node.staticEval(), node.last_move
         
@@ -34,20 +34,26 @@ class MinimaxPlayer(Player):
             maxEval = float('-inf')
             maxMove = None
             for child in node.subnodes:
-                currEval, currMove = self.minimax(child, False)
+                currEval, currMove = self.minimax(child, alpha, beta, False)
                 if (currEval >= maxEval):
                     maxEval = currEval
                     maxMove = currMove
+                alpha = max(alpha, maxEval)
+                if beta <= alpha:
+                    break
             return maxEval, maxMove
         
         if(not maximizingPlayer):
             minEval = float('inf')
             minMove = None
             for child in node.subnodes:
-                currEval, currMove = self.minimax(child, True)
+                currEval, currMove = self.minimax(child, alpha, beta, True)
                 if (currEval <= minEval):
                     minEval = currEval
                     minMove = currMove
+                beta = min(beta, minEval)
+                if beta <= alpha:
+                    break
             return minEval, minMove
 
 
@@ -58,16 +64,16 @@ async def main():
         battle_format = "gen8randombattle"
     )
 
-    minimax_player = MinimaxPlayer(
+    minimax_ab_player = MinimaxABPlayer(
         battle_format = "gen8randombattle"
     )
 
-    await minimax_player.battle_against(random_player, n_battles=100)
+    await minimax_ab_player.battle_against(random_player, n_battles=100)
 
     print(
-        "Minimax player won %d / 100 battles [this took %f seconds]"
+        "Minimax Alpha-Beta player won %d / 100 battles [this took %f seconds]"
         % (
-            minimax_player.n_won_battles, time.time() - start
+            minimax_ab_player.n_won_battles, time.time() - start
         )
     )
 
