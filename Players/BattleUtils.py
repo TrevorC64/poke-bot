@@ -8,14 +8,40 @@ class BattleUtils:
         # returns the calculated damage when the playerMon uses the given move
         # on the opponent mon
 
-        ## addcording to GEN1 & ignoring critical hits & damage multiplier
+        # grab the poke-env pokemon objects
+        player_mon = playerMon.pokemon_obj
+        opp_mon = oppMon.pokemon_obj
+    
+        ## according to GEN5 & ignoring critical hits & status effects
+        if(move.category == 1): # Then physical 
+            attk = player_mon.base_stats['atk']
+            defense = opp_mon.base_stats['def']
+        elif(move.category == 2): # Then Special
+            attk = player_mon.base_stats['spa']
+            defense = opp_mon.base_stats['spd']
+        else:
+            attk = 0
+            defense = 1
+
+        targets = 1 # 0.75 if more than one target
+        pb = 1 ## 0.25 if second strike of parental bond
+        weather = 1 ## based on current weather condition of the battle
+        gr = 1 ## glaive rush
         critical = 1
-        t1 = (((((2 * playerMon.level * critical) / 5) + 2) * move.base_power * (playerMon.base_stats['atk'] / oppMon.base_stats['def'])) / 50) + 2
-        stab = 1
+        rand = randint(217, 255)
+        ## calculate stab
         if((move.type == playerMon.type_1) or (move.type == playerMon.type_1)):
             stab = 1.5
-        type_1 = 1
-        type_2 = 1
-        rand = randint(217, 255)
+        
+        # Type multiplier
+        type_multiplier = opp_mon.damage_multiplier(move)
 
-        return t1 * stab * type_1 * type_2 * rand
+        burn = 1 ## if burn is active
+
+        other = 1 ## multiplier for held items, special scenarios
+
+
+        t1 = (((((2 * playerMon.level * critical) / 5) + 2) * move.base_power * (attk / defense)) / 50) + 2
+        stab = 1
+
+        return t1 * targets * pb * weather * gr * critical * rand  * stab * type_multiplier * burn * other

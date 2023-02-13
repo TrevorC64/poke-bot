@@ -55,14 +55,14 @@ async def main():
     start = time.time()
 
     random_player = RandomPlayer(
-        battle_format = "gen8randombattle"
+        battle_format = "gen5randombattle"
     )
 
     minimax_player = MinimaxPlayer(
-        battle_format = "gen8randombattle"
+        battle_format = "gen5randombattle"
     )
 
-    await minimax_player.battle_against(random_player, n_battles=100)
+    await minimax_player.battle_against(random_player, n_battles=10)
 
     print(
         "Minimax player won %d / 100 battles [this took %f seconds]"

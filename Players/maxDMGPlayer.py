@@ -28,11 +28,11 @@ async def main():
 
     # Create two players
     random_player = RandomPlayer(
-        battle_format = "gen8randombattle",
+        battle_format = "gen5randombattle",
     )
 
     max_damage_player = MaxDamagePlayer(
-        battle_format="gen8randombattle",
+        battle_format="gen5randombattle",
     )
 
     # Now let the two players battle 100 times

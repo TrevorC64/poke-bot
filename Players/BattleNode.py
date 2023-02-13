@@ -9,6 +9,7 @@ class PokemonSim:
         self.level = pokemon_obj.level
         self.moves = pokemon_obj.moves
         self.type_1 = pokemon_obj.type_1
+        self.pokemon_obj = pokemon_obj
     
     def takeDamage(self, dmg):
         ## add handling for fainting
