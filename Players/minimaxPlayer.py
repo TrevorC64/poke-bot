@@ -3,6 +3,8 @@ import asyncio
 from poke_env.player import Player, RandomPlayer
 from BattleNode import BattleTree 
 
+from maxDMGPlayer import MaxDamagePlayer
+
 ## Player object that utilizes a minimax algorithm to attack
 
 class MinimaxPlayer(Player):
@@ -12,6 +14,7 @@ class MinimaxPlayer(Player):
         bt = BattleTree()
         bt.populateFromBattleState(battle)
         bt.generate(4, True)
+        
         
         if battle.available_moves: 
             # Finds move from avaliable moves with highest base power
@@ -54,15 +57,19 @@ class MinimaxPlayer(Player):
 async def main():
     start = time.time()
 
-    random_player = RandomPlayer(
+    max_dmg_player = MaxDamagePlayer(
         battle_format = "gen5randombattle"
     )
+
+   # random_player = RandomPlayer(
+   #     battle_format = "gen5randombattle"
+   # )
 
     minimax_player = MinimaxPlayer(
         battle_format = "gen5randombattle"
     )
 
-    await minimax_player.battle_against(random_player, n_battles=10)
+    p = await minimax_player.battle_against(max_dmg_player, n_battles=100)
 
     print(
         "Minimax player won %d / 100 battles [this took %f seconds]"

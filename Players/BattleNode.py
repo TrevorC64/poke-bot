@@ -9,6 +9,7 @@ class PokemonSim:
         self.level = pokemon_obj.level
         self.moves = pokemon_obj.moves
         self.type_1 = pokemon_obj.type_1
+        self.type_2 = pokemon_obj.type_2
         self.pokemon_obj = pokemon_obj
     
     def takeDamage(self, dmg):
